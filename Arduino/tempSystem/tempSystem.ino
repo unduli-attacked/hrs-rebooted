@@ -4,7 +4,7 @@
 #include <WiFiManager.h>
 #include <ESP8266WiFi.h>
 const int fanPin = D6;
-int threshold = 30;
+int threshold = 30; //TODO this is set to something else in sensorArmband????
 
 //allConnections
 String line;
@@ -41,8 +41,8 @@ void setup() {
 }
 
 void loop() {
-  //grabAdmin("temp");
-  temp = grabInt("temp");
+  //grabAdmin("temp"); //TODO delete
+  temp = grabInt("temp"); //TODO where is the temp even set?
   aTemp = grabAdmin("temp");
   Serial.println(temp);
   if (aTemp == true) {
