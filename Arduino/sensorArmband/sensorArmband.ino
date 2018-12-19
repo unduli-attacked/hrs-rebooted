@@ -1,4 +1,4 @@
-
+//TODO get rid of shitty copypaste comments we don't need
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -13,7 +13,7 @@
 #include "Adafruit_TMP006.h"
 
 //for pulse
-Average<float> ave(500);
+Average<float> ave(500);//TODO tf does this do
 Average<float> fin(3);
 
 //for temp
@@ -21,6 +21,7 @@ int threshold = 32; //C
 Adafruit_TMP006 tmp006;
 
 //allConnections
+//TODO god i wish arduino did oop
 String line;
 String data;
 String hosCode;
@@ -47,12 +48,12 @@ volatile int thresh = 530;                // used to find instant moment of hear
 volatile int amp = 0;                   // used to hold amplitude of pulse waveform, seeded
 volatile boolean firstBeat = true;        // used to seed rate array so we startup with reasonable BPM
 volatile boolean secondBeat = false;      // used to seed rate array so we startup with reasonable BPM
-#define PROCESSING_VISUALIZER 1
+#define PROCESSING_VISUALIZER 1 //TODO pretty sure we don't need this
 #define SERIAL_PLOTTER  2
 
 //  Variables
 int pulsePin = 0;                 // Pulse Sensor purple wire connected to analog pin 0
-int blinkPin = LED_BUILTIN;                // pin to blink led at each beat
+int blinkPin = LED_BUILTIN;                // pin to blink led at each beat //TODO don't think we want this
 int fadePin = 5;                  // pin to do fancy classy fading blink at each beat
 int fadeRate = 0;                 // used to fade LED on with PWM on fadePin
 
@@ -101,7 +102,7 @@ void setup()   {
 
   Serial.println(thresh);
 
-  lastTime = micros();
+  lastTime = micros(); //TODO why is this micros. i remember there's a reason but why
 }
 
 
@@ -128,7 +129,7 @@ void loop() {
     QS = false;                      // reset the Quantified Self flag for next time
   }
 }
-
+//TODO do the library/.ino lib thing for all the pulse sensor stuff so its not spaghetti
 void serialOutput() {  // Decide How To Output Serial.
   switch (outputType) {
     case PROCESSING_VISUALIZER:
@@ -277,7 +278,7 @@ void sendDataToSerial(char symbol, int data ) {
   Serial.println(data);
 }
 
-void calibrate() {
+void calibrate() { //so this just finds the average pulse midline over like 15secs //TODO make timeperiod longer?
   int count = 0;
   int minOne;
   int maxOne;
@@ -292,7 +293,7 @@ void calibrate() {
 
   while (count < 500) {
     ave.push(analogRead(A0));
-    delay(9);
+    delay(9);//TODO delay 10?
     delay(1);
     count = count + 1;
   }
@@ -347,14 +348,14 @@ void calibrate() {
 
   threshUnF = maxAverage - minAverage;
   Serial.println(threshUnF);
-  threshUnFi = threshUnF / 2;
+  threshUnFi = threshUnF / 2; //TODO you know you can redefine variables, right?
   Serial.println(threshUnFi);
   thresh = threshUnFi + minAverage;
   Serial.println(thresh);
   Serial.println("Calibration done");
 
 }
-
+//TODO why. w h y. we literally have a wholeass file so this doesn't need to be here. if it was throwing errors, THIS WASN'T THE PROBLEM
 void assign() {
   int len = line.length() + 1;
   char asinmt[len];
