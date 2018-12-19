@@ -1,14 +1,14 @@
 // This is pointless AF and probably won't actually be used in this project but also it's cool as hell
 // and it's possible it could somehow be used to control lights w/o built in drivers
 
-int gLed = 8;
+int gLed = 8; //TODO change from int to other type?
 int rLed = 9;
 int bLed = 10;
 int full = 4;
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(9600);
+  Serial.begin(9600); //TODO add print statements to rep. up/down time?
   pinMode(gLed, OUTPUT);
   pinMode(rLed, OUTPUT);
   pinMode(bLed, OUTPUT);
@@ -20,7 +20,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  colorMix(255, 242, 0, 10000);
+  colorMix(255, 242, 0, 10000); //TODO find a way to make it run w/o claiming the ENTIRE processor
 }
 
 void colorMix(int r, int g, int b, float ti) {
@@ -42,12 +42,12 @@ void dim(float rus, float gus, float bus, float tim) {
   //-ds is down % of the duty cycle (out of 10)
   float startTime = millis();
   float lastTime = millis();
-  while (startTime - lastTime <= tim) {
+  while (startTime - lastTime <= tim) { //TODO why is this here and not in the main loop
     if (rus == 0) {
       digitalWrite(rLed, LOW);
     } else {
       digitalWrite(rLed, HIGH);
-      delay(rus);
+      delay(rus); //TODO check if delay impacts other systems
       digitalWrite(rLed, LOW);
       delay(rds);
     }
