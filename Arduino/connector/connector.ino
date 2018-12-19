@@ -4,18 +4,21 @@
 #include <WiFiManager.h> //https://github.com/tzapu/WiFiManager WiFi Configuration Magic
 #include <Adafruit_NeoPixel.h>
 #include <Wire.h>
+//TODO try just straight-up including allConnections.ino and see if it breaks
 #ifdef __AVR__
 
 #include <avr/power.h>
 #endif
 
+//TODO there's no lights on this. why is this code here?
 #define PIXEL_PIN 14
 #define PIXEL_COUNT 74
 #define PIXEL_TYPE NEO_GRB + NEO_KHZ800
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXEL_COUNT, PIXEL_PIN, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(PIXEL_COUNT, PIXEL_PIN, PIXEL_TYPE);
 #include "AdafruitIO_WiFi.h"
-int currentColor = 16777215;
+int currentColor = 16777215; //TODO hex, decimal, or binary. pick ONE and stick to it
+//TODO add comments to at least group this chaos
 bool tooHigh = false;
 bool tooLow = false;
 bool nighttime = false;
@@ -35,7 +38,7 @@ int low = 52;
 int hr;
 int mi;
 int sec;
-String month;
+String month; //TODO make an int month and have an array for month names?
 int day;
 int year;
 bool more0Added = false;
@@ -45,7 +48,7 @@ int lastChange = 0;
 int monthLength;
 bool addDay = false;
 bool subDay = false;
-int pthr;
+int pthr; //TODO jfc what even are variable names
 int timeZone = -7;
 int sunsetHr = 19;
 int sunsetMin = 0;
@@ -53,12 +56,12 @@ int sunriseHr = 6;
 int sunriseMin = 30;
 bool nightChange = false;
 int minOfDay;
-int lastBright = 20000;
+int lastBright = 20000; //TODO what is this and how is it different from oldBright
 float oldBright = 255;
 int lastLocal = millis();
 bool first = true;
 
-int lightBlue = 0x68c2f0;
+int lightBlue = 0x68c2f0; //TODO any particular reason for these defaults?
 int mediumBlue = 0x00bfff;
 int darkBlue = 0x0000ff;
 int lightYellow = 0xfedf33;
@@ -82,7 +85,7 @@ bool aTemp = true;
 bool aAutoBright = true;
 bool aAutoColor = true;
 int BPM;
-int tzMins = -420;
+int tzMins = -420; //TODO this is a different name from what's actually in allConnections. what is u doing
 bool tzError = false;
 
 void setup() {
@@ -96,7 +99,7 @@ void setup() {
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 
-  fetch();
+  fetch(); //TODO again with the inside assign()
   assign();
 
   tzMins = grabInt("timeZone");
@@ -107,16 +110,17 @@ void setup() {
     if (adjTzMins % 60 == 0) {
       timeZone = adjTzMins / 60;
     } else {
-      adjTzMins = tzMins - 45;
+      adjTzMins = tzMins - 45; //TODO 15mins exist. deal with it
       if (adjTzMins % 60 == 0) {
         timeZone = adjTzMins / 60;
       } else {
         Serial.println("Time zone error");
-        tzError = true;
+        tzError = true; //TODO is there somehting we do with a tzError? or is it just kinda there?
       }
     }
   }
 
+  //TODO wtf does this do. wtf is it for
   if (timeZone > 0) {
     if (hr >= 24 - timeZone) {
       addDay = true;
@@ -129,7 +133,7 @@ void setup() {
     if (hr >= 0) {
       Serial.println("hr greater than 0");
       if (hr <= timeZone * -1) {
-        Serial.println("hr less than 7");
+        Serial.println("hr less than 7"); //TODO its not always 7 u dumbass
         subDay = true;
       }
 
@@ -164,18 +168,18 @@ void loop() {
 
 
   if (autoColor == true) {
-    if (currentColor != oldColor) {
-      if (lastTime - millis() >= 1000) {
+    if (currentColor != oldColor) { //TODO add as an && to original if
+      if (lastTime - millis() >= 1000) {//TODO add as an && to original if
         Serial.print("Old color: ");
         Serial.println(oldColor);
-        String hexCol = hexa(currentColor);
+        String hexCol = hexa(currentColor);//TODO can this be done in an allConnections function?
         sennd("color", hexCol);
         Serial.print("New color: ");
         Serial.println(currentColor);
         oldColor = currentColor;
         lastTime = millis();
       } else {
-        Serial.println("waiting");
+        Serial.println("waiting"); //TODO unimportant, delete
       }
     } else {
       //Serial.println("same color");
@@ -194,7 +198,7 @@ void bpm() {
 
   if (BPM > high) {
     Serial.println("too high");
-    nightChange = true;
+    nightChange = true; //TODO why does it become night if someone's panicking?????
     lowCount = 0;
     if (BPM <= high + 5) {
       currentColor = lightBlue;
@@ -231,6 +235,8 @@ void bpm() {
   } else {
     nightChange = false;
     Serial.println("just right");
+    //TODO so the whole highCount/lowCount thing kinda looks like the i in pid, so why not go all the way and make at least pi 
+    //for heart rate by adding blue/yellow depending on output
     if (highCount == 3) {
       currentColor = mediumBlue;
       highCount = 2;
@@ -271,7 +277,7 @@ void bpm() {
   }
 }
 
-void ages() {
+void ages() { //TODO rename to rep. the fact that it's tied to bpm
 
   //Extract the number
   age = grabInt("age");
@@ -313,7 +319,7 @@ void ages() {
 }
 
 void daylight() {
-  float a;
+  float a; //TODO hun. why. with. the. names.
   float b;
   float c;
   float m;
@@ -326,6 +332,7 @@ void daylight() {
   float xp = 720;
   float yp = 255;
   float calc5;
+  //TODO update with what I have in desmos
   if (minOfDay <= 1140 && minOfDay >= 390) {
     a = -0.00048804;
     b = 0.702778;
@@ -358,12 +365,12 @@ void daylight() {
   bright = calc5;
   if (oldBright != bright) {
     if (lastBright - millis() >= 1000) {
-      if (first == true) {
+      if (first == true) { //TODO why is this even here?
         Serial.print("Old brightness: ");
         Serial.println(oldBright);
-        sennd("brightness", String(bright));
+        sennd("brightness", String(bright)); //TODO why is it a string?
         Serial.print("New brightness: ");
-        Serial.println(255);
+        Serial.println(255); //TODO why are you saying something that's not 100% true?
         oldBright = 255;
         lastBright = millis();
         first = false;
@@ -377,7 +384,7 @@ void daylight() {
         lastBright = millis();
       }
     } else {
-      Serial.println("waiting");
+      Serial.println("waiting"); //TODO unimportant
     }
   }
 }
@@ -395,7 +402,7 @@ String getTime() {
   }
 
   while (client.available()) {
-    if (client.read() == '\n') {
+    if (client.read() == '\n') {//TODO wow this is lovely
       if (client.read() == 'D') {
         if (client.read() == 'a') {
           if (client.read() == 't') {
@@ -448,13 +455,15 @@ void localTime() {
   mi = min1 + min2;
   sec1 = sec1 * 10;
   sec = sec1 + sec2;
+  
+  //TODO seperate into a whole other function
   if (tzError == false) {
     if (timeZone > 0) {
       if (hr >= 24 - timeZone) {
         Serial.println("day plus");
         day++;
         lastChange = millis();
-        more0Added = true;
+        more0Added = true; //TODO tf does this even mean
       } else if (hr >= 0 && more0Added == true) {
         day--;
         lastChange = millis();
@@ -486,7 +495,7 @@ void localTime() {
     } else if (month == "Feb" && leapYear == false) {
       monthLength = 29;
     } else if (month == "Feb" && leapYear == true) {
-      monthLength = 30;
+      monthLength = 30; //TODO bruh is this even right?
     } else {
       monthLength = 31;
     }
@@ -513,7 +522,7 @@ void localTime() {
         less0Sub = false;
       }
     }
-
+    //TODO pretty sure this is 100% redundant
     if (addDay == true) {
       Serial.println("day plus");
       day++;
@@ -527,7 +536,7 @@ void localTime() {
     }
     if (timeZone > 0) {
       if (hr >= 24 - timeZone) {
-        pthr = hr + timeZone;
+        pthr = hr + timeZone; //TODO pre-timezone hour. it stands for pre-timezone hour. W H Y
         pthr = pthr - 24;
         hr = 0 + pthr;
       } else {
@@ -562,7 +571,7 @@ void localTime() {
   delay(1000);
 }
 
-void nextMonth() {
+void nextMonth() {  //TODO f
   if (month == "Jan") {
     month = "Feb";
   } else if (month == "Feb") {
@@ -591,7 +600,7 @@ void nextMonth() {
   }
 }
 
-void previousMonth() {
+void previousMonth() { //TODO mega f
   if (month == "Jan") {
     month = "Dec";
     year--;
@@ -621,7 +630,7 @@ void previousMonth() {
 }
 
 
-int deca (int hex1, int hex2, int hex3, int hex4, int hex5, int hex6) {
+int deca (int hex1, int hex2, int hex3, int hex4, int hex5, int hex6) { //TODO does this fucker actually work?
   int fi = hex1;
   int fo = hex2;
   int th = hex3;
@@ -638,8 +647,8 @@ int deca (int hex1, int hex2, int hex3, int hex4, int hex5, int hex6) {
   return fin;
 }
 
-String hexa (int dec) {
-  int zer = dec % 16;
+String hexa (int dec) { //TODO how about this one?
+  int zer = dec % 16; //TODO ah yes. just cut off the last letter of the word. genius
   int nextOne = (dec - zer) / 16;
   int o = nextOne % 16;
   nextOne = (nextOne - o) / 16;
@@ -661,7 +670,7 @@ String hexa (int dec) {
 
 }
 
-char check(int num) {
+char check(int num) { //TODO is this even used?
   if (num <= 9) {
     return char(num);
   } else {
