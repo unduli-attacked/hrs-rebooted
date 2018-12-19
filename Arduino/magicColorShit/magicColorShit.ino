@@ -1,3 +1,6 @@
+// This is pointless AF and probably won't actually be used in this project but also it's cool as hell
+// and it's possible it could somehow be used to control lights w/o built in drivers
+
 int gLed = 8;
 int rLed = 9;
 int bLed = 10;
