@@ -1,3 +1,4 @@
+//TODO old and unneccessary
 /*NOTES TO SELF:
   - Try to create brightness feed and see if it'll work
   - OTHER SENSORS:
@@ -16,6 +17,7 @@
 #include <ESP8266WebServer.h> //Local WebServer used to serve the configuration portal
 #include <WiFiManager.h> //https://github.com/tzapu/WiFiManager WiFi Configuration Magic
 #include <Adafruit_NeoPixel.h>
+//TODO do the thing with ac (see Connector)
 #ifdef __AVR__
 
   #include <avr/power.h>
@@ -28,7 +30,7 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXEL_COUNT, PIXEL_PIN, NEO_GRB + NE
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(PIXEL_COUNT, PIXEL_PIN, PIXEL_TYPE);
 #include "AdafruitIO_WiFi.h"
 int pixelColor = 0;
-int valueRainbow = 3;
+int valueRainbow = 3; //TODO why does it exist? why isnt it a bool? and, most importantly, why is it 3?
 float oldBright = 0;
 
 
@@ -63,8 +65,8 @@ void setup() {
 }
 
 void loop() {
- grabInt("color");
- grabInt("brightness");
+ grabInt("color"); //TODO same with this one????????
+ grabInt("brightness"); //TODO doesn't this return and int? tf is u doing?
  if (oldBright != bright){
   Serial.print("New brightness: ");
   Serial.println(bright);
@@ -86,7 +88,7 @@ void loop() {
 }
 
 
-  
+//TODO maybe make a new library/.ino that acts like a lib for these?
 void colorWipe(uint32_t c, uint8_t wait) {
   for(uint16_t i=0; i<strip.numPixels(); i++) {
     strip.setPixelColor(i, c);
