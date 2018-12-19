@@ -1,11 +1,12 @@
 /*
-    This sketch sends data via HTTP GET requests to data.sparkfun.com service.
-
-    You need to get streamId and privateKey at data.sparkfun.com and paste them
-    below. Or just customize this script to talk to other HTTP servers.
+    TODO convert into importable library?
+    
+    This sketch sends data via HTTP GET requests to website and allows it to talk to the hardware systems
+    THIS SKETCH SHOULD BE COPIED INTO THE FOLDER OF EVERY SKETCH THAT REQUIRES IT
+    DO NOT EDIT allConnections.ino FILES DIRECTLY IN SKETCH FOLDERS
 
 */
-//mainly pointless neo code
+//mainly pointless neo code //TODO if it's pointless why is it here?
 #include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
 #include <avr/power.h>
@@ -18,15 +19,15 @@ Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ80
 #include <ESP8266WiFi.h>
 #include <WiFiManager.h>
 
-const char* host = "hrs.heliohost.org";
-String sHost = "hrs.heliohost.org";
+const char* host = "hrs.heliohost.org"; //TODO update
+String sHost = "hrs.heliohost.org"; //TODO why are there 2. it's the same thing. why
 
 
 String line;
 String data;
 String hosCode;
 String rmNum;
-int color = 0xFFFFFF;
+int color = 0xFFFFFF; //TODO convert to run 100% in decimal/binary?
 bool autoColor = true;
 bool autoBright = true;
 int age = 25;
@@ -35,7 +36,7 @@ int bright = 255;
 bool aTemp = true;
 bool aAutoBright = true;
 bool aAutoColor = true;
-float timezone = -420;
+float timezone = -420; //TODO daylight savings time support aka reason #3980 that I want to die
 
 
 void setup() {
@@ -50,7 +51,7 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   //fetches the raw room and hospital assignments from the server
-  fetch();
+  fetch(); //TODO why isn't this called IN assign()?
   //decodes the room and hospital assignments so the ESP can read them
   assign();
 
@@ -61,6 +62,7 @@ void setup() {
 void loop() {
 
   //gets data from files on the server
+  //TODO check that these still match up w/ files on the server, test, then delete loop to prevent redeclaration errors
   color = grabInt("color");
   autoColor = grabBool("autoColor");
   age = grabInt("age");
@@ -95,7 +97,7 @@ void loop() {
 }
 
 bool grabAdmin(String file) {
-  String toFetch = file + "Admin";
+  String toFetch = file + "Admin"; //TODO wh- why would I do it this way? change WEBSITE FILES to special admin folder & add to path
   dataFetch(toFetch);
   if (data == "0") {
     return false;
@@ -125,6 +127,7 @@ float grabFloat(String file) {
 
 int grabInt(String file) {
   dataFetch(file);
+  //TODO wild fuckin plan here.... but maybe recreate the grabColor function and put this shit there?
   if (file == "color") {
     int coLen = data.length() + 1;
     char coA[coLen];
@@ -135,6 +138,7 @@ int grabInt(String file) {
     int red;
     int green;
     int blue;
+    //TODO there's no way this is actually how I should be doing this. make it less dumb
     while (i <= 5) {
       int x = i + 1;
       if (coA[i] == '0' or coA[i] == '1' or coA[i] == '2' or coA[i] == '3' or coA[i] == '4' or coA[i] == '5' or coA[i] == '6' or coA[i] == '7' or coA[i] == '8' or coA[i] == '9') {
@@ -176,7 +180,7 @@ int grabInt(String file) {
 
 
 
-void sennd(String des, String toSend) {
+void sennd(String des, String toSend) { //TODO change name to sendData or something less stupid
   Serial.print("connecting to ");
   Serial.println(host);
 
@@ -215,7 +219,8 @@ void sennd(String des, String toSend) {
   }
 
 
-  String dta = "h=" + hosCode + "&r=" + rmNum + "d8a=" + toSend + "&ds=" + des;
+  String dta = "h=" + hosCode + "&r=" + rmNum + "d8a=" + toSend + "&ds=" + des; //TODO wow it's like I was trying to confuse myself; fix var names
+  //TODO figure out wtf this does exactly
   if (client.connect(sHost, 80)) { // REPLACE WITH YOUR SERVER ADDRESS
     Serial.println("Sending........\n\n");
     client.println("POST /" + hosCode + "/" + rmNum + "/add.php HTTP/1.1");
@@ -241,7 +246,7 @@ void sennd(String des, String toSend) {
 
 void assign() {
   int len = line.length() + 1;
-  char asinmt[len];
+  char asinmt[len]; //TODO 10/10 naming conventions
   line.toCharArray(asinmt, len);
   String hos1 = String(asinmt[14]);
   String hos2 = String(asinmt[15]);
@@ -249,7 +254,7 @@ void assign() {
   String hos4 = String(asinmt[17]);
   String rm1 = String(asinmt[27]);
   rmNum = rm1;
-  if (isDigit(asinmt[28])) {
+  if (isDigit(asinmt[28])) { //TODO oh my fucking god WHY; fix this monstrosity
     String rm2 = String(asinmt[28]);
     rmNum = rm1 + rm2;
     if (isDigit(asinmt[29])) {
@@ -270,7 +275,7 @@ void assign() {
 }
 
 
-void dataFetch(String file) {
+void dataFetch(String file) { //TODO change to return string line //TODO change name to fetch()
   Serial.print("connecting to ");
   Serial.println(host);
 
@@ -319,7 +324,7 @@ void dataFetch(String file) {
   Serial.println("closing connection");
 }
 
-void fetch() {
+void fetch() { //TODO change to return string line //TODO change name to rep. what it actually does
   Serial.print("connecting to ");
   Serial.println(host);
 
